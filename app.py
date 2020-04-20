@@ -53,7 +53,7 @@ def index():
     return render_template('index.html', users=user_list, members=members)
 
 
-@app.route("/reset")
+@app.route("/reset123")
 def reset():
     global user_list, target_list, server_reset_time
     user_list = list()
