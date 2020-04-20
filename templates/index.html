@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>마니또를 뽑아</title>
+</head>
+{% if manito %}
+<p>너의 마니또는 {{manito}}</p>
+{% else %}
+
+{% for member in members %}
+{% if not member in users %}
+<p>
+<form action="/" method="post">
+    <input type="hidden" name="myName" value="{{ member }}"/>
+    <input type="submit" value="{{ member }}"/>
+</form>
+</p>
+{% endif %}
+{% endfor %}
+
+{% endif %}
+</body>
+</html>
