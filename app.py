@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
 import random
+import time
 
-from flask import Flask, request, render_template
+from flask import Flask, request, make_response
 
 app = Flask(__name__)
 
@@ -17,26 +18,34 @@ member = ['@3unbeom',
           '@__hyun91',
           '@vely_yoni_official']
 
-current = member
+current_list = list(member)
+server_reset_time = str(time.time())
 
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
-    if request.method == 'POST':
-        if len(current) == 0:
-            return '다 뽑힘 힝구ㅜ'
-        name = random.choice(current)
-        current.remove(name)
-        return name
-    else:
-        return render_template('index.html')
+    client_reset_time = request.cookies.get('reset_time')
+    if server_reset_time == client_reset_time:
+        return request.cookies.get('name')
+
+    if len(current_list) == 0:
+        return '다 뽑힘 힝구ㅜ'
+
+    name = random.choice(current_list)
+    current_list.remove(name)
+
+    res = make_response(name)
+    res.set_cookie('name', name)
+    res.set_cookie('reset_time', server_reset_time)
+    return res
 
 
 @app.route("/reset")
 def reset():
-    global current
-    current = member
-    return f'리셋완료 {current}'
+    global current_list, server_reset_time
+    current_list = list(member)
+    server_reset_time = str(time.time())
+    return f'리셋완료 {current_list}'
 
 
 if __name__ == "__main__":
